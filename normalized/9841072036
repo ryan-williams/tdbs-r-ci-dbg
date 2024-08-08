@@ -1,0 +1,4 @@
+terminate called after throwing an instance of 'std::bad_function_call'
+  what():  bad_function_call
+/home/runner/work/_temp/<UUID>.sh: line <LINE>:  <ID> Aborted                 (core dumped)
+##[error]Process completed with exit code 134.
