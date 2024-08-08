@@ -1,0 +1,55 @@
+ci (linux, ubuntu-latest, no)	Test	2024-08-07T15:58:22.2778869Z ##[group]Run cd apis/r/tests && Rscript testthat.R
+ci (linux, ubuntu-latest, no)	Test	2024-08-07T15:58:22.2779363Z [36;1mcd apis/r/tests && Rscript testthat.R[0m
+ci (linux, ubuntu-latest, no)	Test	2024-08-07T15:58:22.2844993Z shell: /usr/bin/bash -e {0}
+ci (linux, ubuntu-latest, no)	Test	2024-08-07T15:58:22.2845297Z env:
+ci (linux, ubuntu-latest, no)	Test	2024-08-07T15:58:22.2845522Z   COVERAGE_FLAGS: r
+ci (linux, ubuntu-latest, no)	Test	2024-08-07T15:58:22.2846188Z   COVERAGE_TOKEN: ***
+ci (linux, ubuntu-latest, no)	Test	2024-08-07T15:58:22.2846476Z   _R_CHECK_TESTS_NLINES_: 0
+ci (linux, ubuntu-latest, no)	Test	2024-08-07T15:58:22.2846762Z   CATCHSEGV: TRUE
+ci (linux, ubuntu-latest, no)	Test	2024-08-07T15:58:22.2847019Z   R_REMOTES_UPGRADE: never
+ci (linux, ubuntu-latest, no)	Test	2024-08-07T15:58:22.2847330Z   TILEDB_SOMA_INIT_BUFFER_BYTES: 33554432
+ci (linux, ubuntu-latest, no)	Test	2024-08-07T15:58:22.2847670Z ##[endgroup]
+ci (linux, ubuntu-latest, no)	Test	2024-08-07T15:58:23.9893735Z tiledbsoma:    1.13.99.2
+ci (linux, ubuntu-latest, no)	Test	2024-08-07T15:58:23.9894833Z tiledb-r:      0.29.0
+ci (linux, ubuntu-latest, no)	Test	2024-08-07T15:58:23.9895524Z tiledb core:   2.25.0
+ci (linux, ubuntu-latest, no)	Test	2024-08-07T15:58:23.9896210Z libtiledbsoma: 2.25.0
+ci (linux, ubuntu-latest, no)	Test	2024-08-07T15:58:23.9897147Z R:             R version 4.4.1 (2024-06-14)
+ci (linux, ubuntu-latest, no)	Test	2024-08-07T15:58:23.9898121Z OS:            Ubuntu 22.04.4 LTS
+ci (linux, ubuntu-latest, no)	Test	2024-08-07T15:58:24.0363117Z ✔ | F W  S  OK | Context
+ci (linux, ubuntu-latest, no)	Test	2024-08-07T15:58:24.0370551Z 
+ci (linux, ubuntu-latest, no)	Test	2024-08-07T15:58:25.3409090Z ⠋ [ FAIL 0 | WARN 0 | SKIP 0 | PASS 0 ] Starting up...                          
+ci (linux, ubuntu-latest, no)	Test	2024-08-07T15:58:25.3410292Z ✔ |         25 | Arrow-utils [1.3s]                                             
+ci (linux, ubuntu-latest, no)	Test	2024-08-07T15:58:31.0019404Z 
+ci (linux, ubuntu-latest, no)	Test	2024-08-07T15:58:31.0020703Z ✔ |        140 | Blockwise [5.6s]                                               
+ci (linux, ubuntu-latest, no)	Test	2024-08-07T15:58:31.0300753Z 
+ci (linux, ubuntu-latest, no)	Test	2024-08-07T15:58:31.0301506Z ✔ |         14 | ConfigList                                                     
+ci (linux, ubuntu-latest, no)	Test	2024-08-07T15:58:31.1713197Z 
+ci (linux, ubuntu-latest, no)	Test	2024-08-07T15:58:31.1714407Z ✔ |        115 | CoordsStrider                                                  
+ci (linux, ubuntu-latest, no)	Test	2024-08-07T15:58:31.3557460Z 
+ci (linux, ubuntu-latest, no)	Test	2024-08-07T15:58:31.3558667Z ✔ |         26 | EphemeralCollection                                            
+ci (linux, ubuntu-latest, no)	Test	2024-08-07T15:58:31.4841417Z 
+ci (linux, ubuntu-latest, no)	Test	2024-08-07T15:58:31.4842564Z ✔ |         14 | EphemeralExperiment                                            
+ci (linux, ubuntu-latest, no)	Test	2024-08-07T15:58:31.6491306Z 
+ci (linux, ubuntu-latest, no)	Test	2024-08-07T15:58:31.6492654Z ✔ |         17 | EphemeralMeasurement                                           
+ci (linux, ubuntu-latest, no)	Test	2024-08-07T15:58:31.7272767Z 
+ci (linux, ubuntu-latest, no)	Test	2024-08-07T15:58:31.7273852Z ✔ |          5 | example-datasets                                               
+ci (linux, ubuntu-latest, no)	Test	2024-08-07T15:58:32.1791145Z 
+ci (linux, ubuntu-latest, no)	Test	2024-08-07T15:58:32.1792290Z ✔ |         49 | Factory                                                        
+ci (linux, ubuntu-latest, no)	Test	2024-08-07T15:58:32.2502241Z 
+ci (linux, ubuntu-latest, no)	Test	2024-08-07T15:58:32.2503420Z ✔ |         35 | IntIndexer                                                     
+ci (linux, ubuntu-latest, no)	Test	2024-08-07T15:58:32.3533935Z 
+ci (linux, ubuntu-latest, no)	Test	2024-08-07T15:58:32.3535105Z ✔ |          9 | membership-caching                                             
+ci (linux, ubuntu-latest, no)	Test	2024-08-07T15:58:32.5061901Z 
+ci (linux, ubuntu-latest, no)	Test	2024-08-07T15:58:32.5063031Z ✔ |         11 | OrderedAndFactor                                               
+ci (linux, ubuntu-latest, no)	Test	2024-08-07T15:58:32.5449261Z 
+ci (linux, ubuntu-latest, no)	Test	2024-08-07T15:58:32.5450200Z ✔ |         26 | PlatformConfig                                                 
+ci (linux, ubuntu-latest, no)	Test	2024-08-07T15:58:34.1832063Z 
+ci (linux, ubuntu-latest, no)	Test	2024-08-07T15:58:34.1833347Z ✔ |        277 | reopen [1.6s]                                                  
+ci (linux, ubuntu-latest, no)	Test	2024-08-07T15:58:34.3251145Z 
+ci (linux, ubuntu-latest, no)	Test	2024-08-07T15:58:34.3252272Z ✔ |         70 | ScalarMap                                                      
+ci (linux, ubuntu-latest, no)	Test	2024-08-07T15:58:35.0208091Z 
+ci (linux, ubuntu-latest, no)	Test	2024-08-07T15:58:35.0208637Z  *** caught segfault ***
+ci (linux, ubuntu-latest, no)	Test	2024-08-07T15:58:35.0209370Z address (nil), cause 'unknown'
+ci (linux, ubuntu-latest, no)	Test	2024-08-07T15:58:35.0210031Z An irrecoverable exception occurred. R is aborting now ...
+ci (linux, ubuntu-latest, no)	Test	2024-08-07T15:59:51.3751373Z /home/runner/work/_temp/cdb57c13-deb2-45e7-b88f-5f0601b74483.sh: line 1:  9396 Segmentation fault      (core dumped) Rscript testthat.R
+ci (linux, ubuntu-latest, no)	Test	2024-08-07T15:59:51.3766279Z ##[error]Process completed with exit code 139.

@@ -1,0 +1,6 @@
+ *** caught segfault ***
+address 0x120, cause 'memory not mapped'
+An irrecoverable exception occurred. R is aborting now ...
+/home/runner/work/_temp/2213feaa-a14d-4206-92fe-cbffc71c2931.sh: line 4:  7391 Segmentation fault      (core dumped) Rscript -e "install.packages('devtools')" -e "devtools::install(upgrade = FALSE)" -e "testthat::test_local('tests/testthat', load_package = 'installed')"
+⠏ |          0 | SCEOutgest                                                     
+##[error]Process completed with exit code 139.

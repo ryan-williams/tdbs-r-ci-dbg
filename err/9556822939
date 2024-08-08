@@ -1,0 +1,6 @@
+ *** caught segfault ***
+address 0x55906218cd50, cause 'invalid permissions'
+An irrecoverable exception occurred. R is aborting now ...
+/home/runner/work/_temp/46460fa8-cefd-41c0-b084-c1f225dbbc2c.sh: line 4:  7295 Segmentation fault      (core dumped) Rscript -e "install.packages('devtools')" -e "devtools::install(upgrade = FALSE)" -e "testthat::test_local('tests/testthat', load_package = 'installed')"
+⠏ |          0 | SCEOutgest                                                     
+##[error]Process completed with exit code 139.

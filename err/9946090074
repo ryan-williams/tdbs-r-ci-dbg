@@ -1,0 +1,5 @@
+ *** caught segfault ***
+address 0x7fc6f5f399af, cause 'invalid permissions'
+An irrecoverable exception occurred. R is aborting now ...
+/home/runner/work/_temp/f5daacf7-2ab5-49c0-907b-eab58fab9f1b.sh: line 1:  9471 Segmentation fault      (core dumped) Rscript testthat.R
+##[error]Process completed with exit code 139.

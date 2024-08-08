@@ -1,0 +1,5 @@
+ *** caught segfault ***
+address 0x55ba0000000d, cause 'memory not mapped'
+An irrecoverable exception occurred. R is aborting now ...
+/home/runner/work/_temp/74023789-c2bb-4939-8cd5-f01b35704ff1.sh: line 1:  9510 Segmentation fault      (core dumped) Rscript testthat.R
+##[error]Process completed with exit code 139.
