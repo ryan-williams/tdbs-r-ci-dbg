@@ -33,7 +33,7 @@ An irrecoverable exception occurred. R is aborting now ...
 
 ## Methods
 ### Fetch metadata about [failed `r-ci.yml` `main` runs][r-ci main failures]
-Since 2024-06-18, to [failures-since-20240618.jsonl](failures-since-20240618.jsonl:
+Since 2024-06-18, to [failures-since-20240618.jsonl](failures-since-20240618.jsonl):
 ```bash
 since=2024-06-18
 yyyymmdd=$(echo $since | sed 's/-//g')
