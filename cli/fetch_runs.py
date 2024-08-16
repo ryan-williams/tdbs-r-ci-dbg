@@ -7,7 +7,7 @@ import jsonlines
 from click import option, argument
 from utz import process
 
-from .base import cli
+from .base import cli, since_opt, REPO
 
 
 @contextmanager
@@ -15,15 +15,12 @@ def stdout_context():
     yield stdout
 
 
-DEFAULT_SINCE = "20240618"
-
-
 @cli.command("fetch-runs")
 @option('-b', '--branch', default='main')
 @option('-m', '--max-runs', type=int, default=200)
 @option('-r', '--reverse-chron', is_flag=True)
 @option('-s', '--status', 'statuses', multiple=True, default=('success', 'failure'))
-@option("-S", "--since", default=DEFAULT_SINCE)
+@since_opt
 @argument('out-path', required=False)
 def fetch_runs(branch, max_runs, reverse_chron, statuses, since, out_path):
     if since:
@@ -44,7 +41,7 @@ def fetch_runs(branch, max_runs, reverse_chron, statuses, since, out_path):
     def fetch_for_status(status: Optional[str] = None) -> list[dict]:
         return process.json(
             "gh", "run",
-            "-R", "single-cell-data/TileDB-SOMA",
+            "-R", REPO,
             "list",
             "-w", "r-ci.yml",
             *(["-b", branch] if branch else []),
