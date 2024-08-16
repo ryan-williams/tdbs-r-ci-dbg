@@ -1,11 +1,9 @@
-import re
-from os import listdir
 from os.path import exists
 from re import sub
 
 from utz import parallel
 
-from .base import cli, out_dir_opt, n_jobs_opt, overwrite_opt
+from .base import cli, out_dir_opt, n_jobs_opt, overwrite_opt, load_db_ids
 from .extract_errors import ERR_DIR
 
 NORMALIZED_DIR = "normalized"
@@ -31,7 +29,7 @@ def normalize_errors(overwrite, n_jobs, out_dir):
     > normalized/{}'
     """
 
-    def normalize_err_logs(db_id):
+    def normalize_err_logs(db_id: int) -> None:
         in_path = f"{ERR_DIR}/{db_id}"
         out_path = f"{out_dir}/{db_id}"
         if exists(out_path):
@@ -59,8 +57,5 @@ def normalize_errors(overwrite, n_jobs, out_dir):
                     continue
                 w.write(line)
 
-    db_ids = [
-        re.match(r"(\d+)$", path).group(1)
-        for path in listdir(ERR_DIR)
-    ]
+    db_ids = load_db_ids(ERR_DIR)
     parallel(db_ids, normalize_err_logs, n_jobs=n_jobs)

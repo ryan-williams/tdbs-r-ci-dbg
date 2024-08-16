@@ -1,35 +1,47 @@
 # [`r-ci.yml`] CI failure analysis
 
 ## Summary
-Error log lines, normalized and grouped:
+Error logs, normalized and grouped:
+
+### "memory not mapped"
+Seen 48x, most recently at [2024-08-16T14:34](https://github.com/single-cell-data/TileDB-SOMA/actions/runs/10421656279):
 ```
-SHA e859ef999150e001b7b08ae2d1e73180a3f1f8de, seen 38x, e.g. run 10062825179:
  *** caught segfault ***
 address <ADDRESS>, cause 'memory not mapped'
 An irrecoverable exception occurred. R is aborting now ...
 /home/runner/work/_temp/<UUID>.sh: line <LINE>:  <ID> Segmentation fault      (core dumped)
 ##[error]Process completed with exit code 139.
+```
 
-SHA 5330f593509a898c2847642bacb277170e107e25, seen 6x, e.g. run 10117378964:
-terminate called after throwing an instance of 'std::bad_function_call'
-  what():  bad_function_call
-/home/runner/work/_temp/<UUID>.sh: line <LINE>:  <ID> Aborted                 (core dumped)
-##[error]Process completed with exit code 134.
-
-SHA 00ab001a8d3acf1b34cb6486d31b4ad9c14c64f9, seen 6x, e.g. run 10086755545:
+### "invalid permissions"
+Seen 11x, most recently at [2024-08-15T14:09](https://github.com/single-cell-data/TileDB-SOMA/actions/runs/10405130321):
+```
  *** caught segfault ***
 address <ADDRESS>, cause 'invalid permissions'
 An irrecoverable exception occurred. R is aborting now ...
 /home/runner/work/_temp/<UUID>.sh: line <LINE>:  <ID> Segmentation fault      (core dumped)
 ##[error]Process completed with exit code 139.
+```
 
-SHA 50a96d9e82b26845bcab5d6ed0bcfc68aae655e5, seen 4x, e.g. run 10060281551:
+### "address (nil), cause 'unknown'"
+Seen 5x, most recently at [2024-08-16T14:44](https://github.com/single-cell-data/TileDB-SOMA/actions/runs/10421787401):
+```
  *** caught segfault ***
 address (nil), cause 'unknown'
 An irrecoverable exception occurred. R is aborting now ...
 /home/runner/work/_temp/<UUID>.sh: line <LINE>:  <ID> Segmentation fault      (core dumped)
 ##[error]Process completed with exit code 139.
 ```
+
+### "bad_function_call"
+Seen 9x, most recently at [2024-08-15T16:31](https://github.com/single-cell-data/TileDB-SOMA/actions/runs/10407106592):
+```
+terminate called after throwing an instance of 'std::bad_function_call'
+  what():  bad_function_call
+/home/runner/work/_temp/<UUID>.sh: line <LINE>:  <ID> Aborted                 (core dumped)
+##[error]Process completed with exit code 134.
+```
+
 
 ## Methods
 
@@ -63,20 +75,9 @@ dbg-r-ci extract-errors
 dbg-r-ci normalize-errors
 ```
 
-### Group by hash
+### Group by hash, summarize groups
 ```bash
-rm -rf shas && mkdir -p shas
-ls normalized/ \
-| parallel --env PATH 'sha="$(shasum normalized/{} | cut -d" " -f1)"; echo {} >> shas/$sha'
-```
-
-### Summarize groups
-```bash
-wc -l shas/* \
-| head -n-1 \
-| sort -nr \
-| perl -pe 's/^ +//g' \
-| parallel -k --env PATH --colsep ' ' 'sha={2/}; first="$(head -1 shas/$sha)"; echo "SHA $sha, seen {1}x, e.g. run $first:"; cat normalized/$first; echo'
+dbg-r-ci summarize
 ```
 
 [`r-ci.yml`]: https://github.com/single-cell-data/TileDB-SOMA/actions/workflows/r-ci.yml

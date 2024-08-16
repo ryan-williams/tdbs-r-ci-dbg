@@ -3,10 +3,10 @@ from os.path import exists
 from typing import Optional
 
 import jsonlines
-from click import option, argument
+from click import argument
 from utz import err, parallel, process, YMD
 
-from .base import cli, DEFAULT_SINCE, REPO, since_opt, overwrite_opt, n_jobs_opt, out_dir_opt
+from .base import cli, DEFAULT_SINCE, REPO, since_opt, overwrite_opt, n_jobs_opt, out_dir_opt, DEFAULT_RUNS_FILE
 
 # Runs omitted due to unrelated failures:
 # - [10113090142]: all jobs failed: `No valid versions of tiledb-r found`
@@ -38,7 +38,7 @@ def download_failure_logs(
 ):
     """Download logs for failed runs since a given date."""
     if not runs_file:
-        runs_file = f"runs-since-{DEFAULT_SINCE}.jsonl"
+        runs_file = DEFAULT_RUNS_FILE
 
     with open(runs_file, "r") as f:
         with jsonlines.Reader(f) as lines:

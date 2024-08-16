@@ -1,11 +1,10 @@
 import re
-from os import makedirs, listdir
+from os import makedirs
 from os.path import exists
 
-from click import option
 from utz import parallel
 
-from .base import cli, overwrite_opt, n_jobs_opt, out_dir_opt
+from .base import cli, overwrite_opt, n_jobs_opt, out_dir_opt, load_db_ids
 from .download_failure_logs import FAIL_LOGS_DIR
 
 ERR_DIR = 'err'
@@ -23,7 +22,7 @@ def extract_errors(overwrite, n_jobs, out_dir):
     """
     makedirs(out_dir, exist_ok=True)
 
-    def extract_run_errors(db_id):
+    def extract_run_errors(db_id: int) -> None:
         in_path = f"{FAIL_LOGS_DIR}/{db_id}"
         out_path = f"{out_dir}/{db_id}"
         if exists(out_path):
@@ -51,8 +50,5 @@ def extract_errors(overwrite, n_jobs, out_dir):
                 if line.strip():
                     print(line, file=w)
 
-    db_ids = [
-        re.match(r"(\d+)$", path).group(1)
-        for path in listdir("log-failed")
-    ]
+    db_ids = load_db_ids("log-failed")
     parallel(db_ids, extract_run_errors, n_jobs=n_jobs)

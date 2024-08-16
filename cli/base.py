@@ -1,3 +1,6 @@
+import re
+from os import listdir
+
 import click
 from click import option
 from utz import YMD
@@ -9,6 +12,7 @@ def cli():
 
 
 DEFAULT_SINCE = "20240618"
+DEFAULT_RUNS_FILE = f"runs-since-{DEFAULT_SINCE}.jsonl"
 REPO = "single-cell-data/TileDB-SOMA"
 
 
@@ -25,3 +29,10 @@ def out_dir_opt(default: str):
 
 
 since_opt = option("-S", "--since", default=DEFAULT_SINCE, callback=parse_ymd, help="Only consider runs since this date")
+
+
+def load_db_ids(dir: str) -> list[int]:
+    return [
+        int(re.match(r"(\d+)$", path).group(1))
+        for path in listdir(dir)
+    ]
