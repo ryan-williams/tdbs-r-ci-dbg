@@ -32,26 +32,23 @@ An irrecoverable exception occurred. R is aborting now ...
 ```
 
 ## Methods
-### Fetch metadata about [failed `r-ci.yml` `main` runs][r-ci main failures]
-Since 2024-06-18, to [failures-since-20240618.jsonl](failures-since-20240618.jsonl):
+
+Clone + Install:
 ```bash
-since=2024-06-18
-yyyymmdd=$(echo $since | sed 's/-//g')
-max=100
-gh run list -w r-ci.yml -b main --json number,databaseId,conclusion,createdAt -L $max \
-| jq -c "
-    .[]
-    | select(
-        .conclusion == \"failure\" and
-        .createdAt > \"$since\"
-    )
-" | tee failures-since-$yyyymmdd.jsonl
+git clone https://github.com/ryan-williams/tdbs-r-ci-dbg
+pip install -e tdbs-r-ci-dbg
+```
+
+### Fetch metadata about [recent `r-ci.yml` `main` runs]
+Since 2024-06-18, save to [runs-since-20240618.jsonl](runs-since-20240618.jsonl):
+```bash
+dbg-r-ci fetch-runs
 ```
 
 ### Download failure logs to [log-failed/](log-failed/)
 ```bash
 mkdir -p log-failed
-cat failures-since-20240618.jsonl \
+cat runs-since-20240618.jsonl \
 | jq -r .databaseId \
 | grep -v  -e 10113090142 -e 10306622414 \
 | parallel 'f=log-failed/{}; if ! [ -f $f ]; then echo "Downloading {}"; gh run view {} --log-failed > $f; fi'
@@ -110,4 +107,4 @@ wc -l shas/* \
 [10113090142]: https://github.com/single-cell-data/TileDB-SOMA/actions/runs/10113090142
 [10306622414]: https://github.com/single-cell-data/TileDB-SOMA/actions/runs/10306622414
 
-[r-ci main failures]: https://github.com/single-cell-data/TileDB-SOMA/actions/workflows/r-ci.yml?query=branch%3Amain+is%3Afailure
+[recent `r-ci.yml` `main` runs]: https://github.com/single-cell-data/TileDB-SOMA/actions/workflows/r-ci.yml?query=branch%3Amain

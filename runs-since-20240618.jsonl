@@ -67,6 +67,8 @@
 {"conclusion":"failure","createdAt":"2024-07-02T17:03:57Z","databaseId":9765104519,"number":5449}
 {"conclusion":"failure","createdAt":"2024-06-28T15:41:26Z","databaseId":9715377508,"number":5444}
 {"conclusion":"failure","createdAt":"2024-06-28T13:11:46Z","databaseId":9713375174,"number":5442}
+{"conclusion":"success","createdAt":"2024-06-20T15:56:37Z","databaseId":9600608992,"number":5427}
+{"conclusion":"success","createdAt":"2024-06-19T17:56:44Z","databaseId":9586331976,"number":5426}
 {"conclusion":"failure","createdAt":"2024-06-18T20:48:08Z","databaseId":9572000964,"number":5423}
 {"conclusion":"failure","createdAt":"2024-06-18T19:23:01Z","databaseId":9570984555,"number":5422}
 {"conclusion":"failure","createdAt":"2024-06-18T17:18:53Z","databaseId":9569392325,"number":5419}

@@ -1,5 +1,5 @@
 from .base import cli
-from .fetch_failures import fetch_failures
+from .fetch_runs import fetch_runs
 
 
 if __name__ == "__main__":
