@@ -47,15 +47,8 @@ dbg-r-ci fetch-runs
 
 ### Download failure logs to [log-failed/](log-failed/)
 ```bash
-mkdir -p log-failed
-cat runs-since-20240618.jsonl \
-| jq -r .databaseId \
-| grep -v  -e 10113090142 -e 10306622414 \
-| parallel 'f=log-failed/{}; if ! [ -f $f ]; then echo "Downloading {}"; gh run view {} --log-failed > $f; fi'
+dbg-r-ci download-failure-logs
 ```
-Runs omitted due to unrelated failures:
-- [10113090142]: all jobs failed: `No valid versions of tiledb-r found`
-- [10306622414]: workflow file syntax error, no logs produced
 
 ### Extract error messages to [err/](err/)
 ```bash
@@ -104,7 +97,5 @@ wc -l shas/* \
 ```
 
 [`r-ci.yml`]: https://github.com/single-cell-data/TileDB-SOMA/actions/workflows/r-ci.yml
-[10113090142]: https://github.com/single-cell-data/TileDB-SOMA/actions/runs/10113090142
-[10306622414]: https://github.com/single-cell-data/TileDB-SOMA/actions/runs/10306622414
 
 [recent `r-ci.yml` `main` runs]: https://github.com/single-cell-data/TileDB-SOMA/actions/workflows/r-ci.yml?query=branch%3Amain

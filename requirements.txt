@@ -1,2 +1,4 @@
 click
-utz
+joblib
+jsonlines
+utz>=0.7.1
