@@ -14,7 +14,7 @@ def stdout_context():
     yield stdout
 
 
-@cli.command("fetch-runs")
+@cli.command
 @option('-b', '--branch', default='main')
 @option('-m', '--max-runs', type=int, default=200)
 @option('-r', '--reverse-chron', is_flag=True)

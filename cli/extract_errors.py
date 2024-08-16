@@ -5,16 +5,16 @@ from os.path import exists
 from click import option
 from utz import parallel
 
-from .base import cli, overwrite_opt, njobs_opt
+from .base import cli, overwrite_opt, n_jobs_opt, out_dir_opt
 from .download_failure_logs import FAIL_LOGS_DIR
 
 ERR_DIR = 'err'
 
 
-@cli.command("extract-errors")
+@cli.command
 @overwrite_opt
-@njobs_opt
-@option('-o', '--out-dir', default=ERR_DIR)
+@n_jobs_opt
+@out_dir_opt(ERR_DIR)
 def extract_errors(overwrite, n_jobs, out_dir):
     """Remove failed runs' logs that precede the failure, strip metadata/timestamps, drop empty lines.
     - Strip lines' metadata prefixes (workflow/job names, timestamps)

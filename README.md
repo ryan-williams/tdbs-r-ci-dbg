@@ -60,17 +60,7 @@ dbg-r-ci extract-errors
 
 ### Normalize: elide memory addresses, UUIDs
 ```bash
-mkdir -p normalized
-ls err/ \
-| parallel --env PATH 'h="[\\da-f]"; h4="$h$h$h$h"; cat err/{} \
-| perl -pe "s/address 0x$h+/address <ADDRESS>/" \
-| perl -pe "s/$h4$h4-$h4-$h4-$h4-$h4$h4$h4/<UUID>/" \
-| perl -pe "s/<UUID>.sh: line (1|4):/<UUID>.sh: line <LINE>:/" \
-| perl -pe "s/:  \d+ (Segmentation fault|Aborted)/:  <ID> \$1/" \
-| perl -pe "s/( \(core dumped\)) Rscript .*/\$1/" \
-| sed -e "/##\[debug\]Finishing: Test/d" \
-| sed -e "/0 | SCEOutgest/d" \
-> normalized/{}'
+dbg-r-ci normalize-errors
 ```
 
 ### Group by hash
