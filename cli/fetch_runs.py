@@ -22,6 +22,7 @@ def stdout_context():
 @since_opt
 @argument('out-path', required=False)
 def fetch_runs(branch, max_runs, reverse_chron, statuses, since, out_path):
+    """Fetch runs of the r-ci.yml workflow."""
     if since:
         since = YMD(since)
 

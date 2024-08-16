@@ -52,14 +52,7 @@ dbg-r-ci download-failure-logs
 
 ### Extract error messages to [err/](err/)
 ```bash
-mkdir -p err
-ls log-failed/ \
-| parallel 'cat log-failed/{} \
-| cut -f3- \
-| cut -d" " -f2- \
-| sed -e "1,/70 | ScalarMap/ d" \
-| sed "/^\s*$/d" \
-> err/{}'
+dbg-r-ci extract-errors
 ```
 - Strip lines' metadata prefixes (workflow/job names, timestamps)
 - Drop lines up to and including the first occurrence of `70 | ScalarMap`
