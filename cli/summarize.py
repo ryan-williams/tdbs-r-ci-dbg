@@ -1,7 +1,9 @@
+from contextlib import contextmanager, nullcontext
+from functools import partial
 from hashlib import sha256
-from sys import stdout
 
 import jsonlines
+from click import option
 
 from .base import cli, load_db_ids, DEFAULT_RUNS_FILE, REPO
 from .normalize_errors import NORMALIZED_DIR
@@ -14,19 +16,31 @@ NAMES = {
 }
 
 
-@cli.command
-def summarize():
-    """Group normalized error logs, summarize.
+@contextmanager
+def readme_sub_ctx():
+    with open("README.md", "r") as readme_ctx:
+        readme_lines = iter([ line.rstrip("\n") for line in readme_ctx.readlines() ])
+    file = open("README.md", "w")
+    write = partial(print, file=file)
+    try:
+        for line in readme_lines:
+            write(line)
+            if line == "<!-- summary -->":
+                yield file
+                break
+    finally:
+        for line in readme_lines:
+            if line == "<!-- /summary -->":
+                write(line)
+                break
+        for line in readme_lines:
+            write(line)
 
-    rm -rf shas && mkdir -p shas
-    ls normalized/ \
-    | parallel --env PATH 'sha="$(shasum normalized/{} | cut -d" " -f1)"; echo {} >> shas/$sha'
-    wc -l shas/* \
-    | head -n-1 \
-    | sort -nr \
-    | perl -pe 's/^ +//g' \
-    | parallel -k --env PATH --colsep ' ' 'sha={2/}; first="$(head -1 shas/$sha)"; echo "SHA $sha, seen {1}x, e.g. run $first:"; cat normalized/$first; echo'
-    """
+
+@cli.command
+@option('-u', '--update-readme', is_flag=True)
+def summarize(update_readme):
+    """Group normalized error logs, summarize."""
     db_ids = load_db_ids(NORMALIZED_DIR)
     shas = {}
     for db_id in db_ids:
@@ -44,17 +58,37 @@ def summarize():
                 for run in runs
             }
 
-    for sha, db_ids in shas.items():
-        db_ids.sort()
-        name = NAMES[sha]
-        last_id = db_ids[-1]
-        last_run = runs_by_id[last_id]
-        last_run_dt = last_run["createdAt"][:-4]
-        print(f"### \"{name}\"")
-        url = f"https://github.com/{REPO}/actions/runs/{last_id}"
-        print(f"Seen {len(db_ids)}x, most recently at [{last_run_dt}]({url}):")
-        print(f"```")
-        with open(f"{NORMALIZED_DIR}/{last_id}", "r") as f:
-            stdout.write(f.read())
-        print(f"```")
-        print()
+    with readme_sub_ctx() if update_readme else nullcontext() as readme:
+        def write(line="", **kwargs):
+            print(line, **kwargs)
+            if readme:
+                print(line, file=readme, **kwargs)
+
+        for sha, db_ids in shas.items():
+            db_ids.sort()
+            name = NAMES[sha]
+            last_id = db_ids[-1]
+            last_run = runs_by_id[last_id]
+            last_number = last_run["number"]
+            last_run_dt = last_run["createdAt"][:-4]
+            write(f"### \"{name}\"")
+            url = f"https://github.com/{REPO}/actions/runs/{last_id}"
+            write(f"Seen {len(db_ids)}x, most recently [#{last_number}]({url}) (at {last_run_dt}):")
+            write(f"```")
+            with open(f"{NORMALIZED_DIR}/{last_id}", "r") as f:
+                write(f.read(), end="")
+            write(f"```")
+            write()
+            write("<details>")
+            write("<summary>All runs</summary>")
+            write()
+            for idx, db_id in enumerate(db_ids):
+                run = runs_by_id[db_id]
+                number = run["number"]
+                url = f"https://github.com/{REPO}/actions/runs/{db_id}"
+                if idx > 0:
+                    write(", ", end="")
+                write(f"[#{number}]({url})", end="")
+            write()
+            write("</details>")
+            write()
