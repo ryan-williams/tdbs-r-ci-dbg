@@ -1,0 +1,5 @@
+ *** caught segfault ***
+address (nil), cause 'unknown'
+An irrecoverable exception occurred. R is aborting now ...
+/home/runner/work/_temp/e8d67ce2-b05a-42bd-a28c-b14629db1f76.sh: line 1:  9490 Segmentation fault      (core dumped) Rscript testthat.R
+##[error]Process completed with exit code 139.
