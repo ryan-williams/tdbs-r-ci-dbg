@@ -48,6 +48,7 @@ def update_issue(
     fetched_at: str,
     header_level: int,
     runs_since_5442: list[dict],
+    quiet: bool,
 ):
     body = singleton(
         process.json(
@@ -104,8 +105,9 @@ def update_issue(
     if new_body == body:
         err(f"#{issue} body unchanged")
         return
-    print("new body:")
-    print(new_body)
+    if not quiet:
+        print("new body:")
+        print(new_body)
     body_path = f"{issue}.md"
     with open(body_path, "w") as f:
         f.write(new_body)
@@ -122,8 +124,9 @@ def update_issue(
 @option('-i', '--issue', type=int, default=GH_ISSUE_NUM, help="Issue number to update. Summary goes between `<!-- summary -->` and `<!-- /summary -->` \"tags\", if present.")
 @option('-I', '--no-update-issue', 'no_update_issue', is_flag=True)
 @option('-l', '--level', type=int, default=3, help='Markdown heading level for each error message group')
+@option('-q', '--quiet', is_flag=True, help=f"Don't print the \"summary\" that's being written to README.md and/or #{GH_ISSUE_NUM}; useful e.g. because GitHub Actions mistakenly detects error messages in the summary as applying to the current job")
 @option('-U', '--no-update-readme', is_flag=True)
-def summarize(issue, no_update_issue, level, no_update_readme):
+def summarize(issue, no_update_issue, level, quiet, no_update_readme):
     """Group normalized error logs, summarize."""
     db_ids = load_db_ids(NORMALIZED_DIR)
     shas = {}
@@ -184,7 +187,8 @@ def summarize(issue, no_update_issue, level, no_update_readme):
             write()
 
     summary_str = summary_io.getvalue()
-    print(summary_str)
+    if not quiet:
+        print(summary_str)
 
     if not no_update_issue:
         runs_since_5442 = [
@@ -193,9 +197,10 @@ def summarize(issue, no_update_issue, level, no_update_readme):
             if run['number'] >= 5442
         ]
         update_issue(
-            issue,
-            summary_str,
-            fetched_at,
+            issue=issue,
+            summary_str=summary_str,
+            fetched_at=fetched_at,
             header_level=level - 1,
             runs_since_5442=runs_since_5442,
+            quiet=quiet,
         )
