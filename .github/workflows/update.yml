@@ -20,9 +20,9 @@ jobs:
     - run: dbg-r-ci download-failure-logs
     - run: dbg-r-ci extract-errors
     - run: dbg-r-ci normalize-errors
-    - run: dbg-r-ci summarize -I
+    - run: dbg-r-ci summarize
     - run: |
-        git add runs-since-* log-failed err normalized README.md
+        git add runs-since-* log-failed err normalized README.md 2906.md
         if ! git diff --cached --quiet; then
           git config --global user.name "GitHub Actions"
           git config --global user.email "ryan.williams+gha@tiledb.com"
