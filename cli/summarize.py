@@ -68,11 +68,24 @@ def update_issue(
     all_failures_since_5442 = all(run['conclusion'] == 'failure' for run in runs_since_5442)
     if not all_failures_since_5442:
         err("Not all runs since #5442 have failed")
+
+    run_number = env.get('GITHUB_RUN_NUMBER')
+    run_id = env.get('GITHUB_RUN_ID')
+    if run_id and run_number:
+        run_url = f"https://github.com/{REPO}/actions/runs/{run_id}"
+        run_link = f"[#{run_number}]({run_url})"
+    else:
+        run_link = None
+
     for line in lines:
         if all_failures_since_5442:
+            sub = f'Since [#5442] (Jun 28), all {len(runs_since_5442)} runs have failed (as of {fetched_at}'
+            if run_link:
+                sub += f": {run_link}"
+            sub += ")"
             line = re.sub(
-                r'Since \[#5442] \(Jun 28\), all \d+ runs have failed \(as of \d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z\)',
-                f'Since [#5442] (Jun 28), all {len(runs_since_5442)} runs have failed (as of {fetched_at})',
+                r'Since \[#5442] \(Jun 28\), all \d+ runs have failed \(as of \d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z(?:: \[#\d+]\([^)]+\))?\)',
+                sub,
                 line,
             )
         write(line)
@@ -84,14 +97,12 @@ def update_issue(
         heading = f"h{header_level}"
         write("<details>")
         write(f"<summary><{heading}>Breakdown by error message</{heading}></summary>")
-        write("")
-        run_number = env.get('GITHUB_RUN_NUMBER')
-        run_id = env.get('GITHUB_RUN_ID')
-        if run_id and run_number:
-            url = f"https://github.com/{REPO}/actions/runs/{run_id}"
-            write(f"*Updated at {fetched_at} (by [#{run_number}]({url}))*")
-        else:
-            write(f"*Updated at {fetched_at}*")
+        write()
+        updated_str = f"Updated at {fetched_at}"
+        if run_link:
+            updated_str += f" (by {run_link})"
+        write(f"*{updated_str}*")
+        write()
         write(summary_str)
         write("</details>")
         for line in lines:
