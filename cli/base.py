@@ -14,6 +14,7 @@ def cli():
 DEFAULT_SINCE = "20240618"
 DEFAULT_RUNS_FILE = f"runs-since-{DEFAULT_SINCE}.jsonl"
 REPO = "single-cell-data/TileDB-SOMA"
+GH_ISSUE_NUM = 2906
 
 
 def parse_ymd(ctx, param, value: str) -> YMD:
