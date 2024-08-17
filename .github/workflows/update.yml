@@ -1,0 +1,31 @@
+name: Update TileDB-SOMA#2906
+on:
+  workflow_dispatch:
+env:
+  GH_TOKEN: ${{ secrets.GH_TOKEN }}
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: webfactory/ssh-agent@v0.9.0
+      with:
+        ssh-private-key: ${{ secrets.GHA_DEPLOY_KEY }}
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+        cache: pip
+    - run: pip install -e .
+    - run: dbg-r-ci fetch-runs
+    - run: dbg-r-ci download-failure-logs
+    - run: dbg-r-ci extract-errors
+    - run: dbg-r-ci normalize-errors
+    - run: dbg-r-ci summarize -I
+    - run: |
+        git add runs-since-* log-failed err normalized README.md
+        if ! git diff --cached --quiet; then
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "ryan.williams+gha@tiledb.com"
+          git commit -m "Update TileDB-SOMA#2906"
+          git push
+        fi
