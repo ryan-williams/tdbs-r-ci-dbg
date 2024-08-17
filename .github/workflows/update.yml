@@ -1,5 +1,7 @@
 name: Update TileDB-SOMA#2906
 on:
+  schedule:
+    - cron: '0 9 * * *'
   workflow_dispatch:
 env:
   GH_TOKEN: ${{ secrets.GH_TOKEN }}
