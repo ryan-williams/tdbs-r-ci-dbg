@@ -1,4 +1,5 @@
 import json
+import re
 from contextlib import contextmanager, nullcontext
 from functools import partial
 from hashlib import sha256
@@ -46,6 +47,7 @@ def update_issue(
     summary_str: str,
     fetched_at: str,
     header_level: int,
+    runs_since_5442: list[dict],
 ):
     body = singleton(
         process.json(
@@ -61,7 +63,16 @@ def update_issue(
     def write(line="", **kwargs):
         print(line, file=body_io, **kwargs)
     found = False
+    all_failures_since_5442 = all(run['conclusion'] == 'failure' for run in runs_since_5442)
+    if not all_failures_since_5442:
+        err("Not all runs since #5442 have failed")
     for line in lines:
+        if all_failures_since_5442:
+            line = re.sub(
+                r'Since \[#5442] \(Jun 28\), all \d+ runs have failed \(as of \d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z\)',
+                f'Since [#5442] (Jun 28), all {len(runs_since_5442)} runs have failed (as of {fetched_at})',
+                line,
+            )
         write(line)
         if line == "<!-- summary -->":
             found = True
@@ -176,4 +187,15 @@ def summarize(issue, no_update_issue, level, no_update_readme):
     print(summary_str)
 
     if not no_update_issue:
-        update_issue(issue, summary_str, fetched_at, header_level=level - 1)
+        runs_since_5442 = [
+            run
+            for run in runs
+            if run['number'] >= 5442
+        ]
+        update_issue(
+            issue,
+            summary_str,
+            fetched_at,
+            header_level=level - 1,
+            runs_since_5442=runs_since_5442,
+        )
