@@ -7,7 +7,7 @@ import jsonlines
 from click import option, argument
 from utz import process, YMD, now
 
-from .base import cli, since_opt, REPO
+from .base import cli, since_opt, TDBS
 
 
 @contextmanager
@@ -33,7 +33,7 @@ def fetch_runs(branch, max_runs, reverse_chron, statuses, since, out_path):
     def fetch_for_status(status: Optional[str] = None) -> list[dict]:
         return process.json(
             "gh", "run",
-            "-R", REPO,
+            "-R", TDBS,
             "list",
             "-w", "r-ci.yml",
             *(["-b", branch] if branch else []),

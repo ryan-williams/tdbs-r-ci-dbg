@@ -10,7 +10,7 @@ import jsonlines
 from click import option
 from utz import process, err, singleton
 
-from .base import cli, load_db_ids, DEFAULT_RUNS_FILE, REPO, GH_ISSUE_NUM, DEFAULT_METADATA_FILE
+from .base import cli, load_db_ids, DEFAULT_RUNS_FILE, TDBS, GH_ISSUE_NUM, DEFAULT_METADATA_FILE, REPO
 from .normalize_errors import NORMALIZED_DIR
 
 NAMES = {
@@ -52,7 +52,7 @@ def update_issue(
     body = singleton(
         process.json(
             'gh', 'issue',
-            '-R', REPO,
+            '-R', TDBS,
             'view', issue,
             '--json', 'body',
         ).values()
@@ -112,7 +112,7 @@ def update_issue(
 
     process.run(
         'gh', 'issue',
-        '-R', REPO,
+        '-R', TDBS,
         'edit', issue,
         '--body-file', body_path,
     )
@@ -162,7 +162,7 @@ def summarize(issue, no_update_issue, level, no_update_readme):
             last_number = last_run["number"]
             last_run_dt = last_run["createdAt"][:-4]
             write(f"{heading_prefix} \"{name}\"")
-            url = f"https://github.com/{REPO}/actions/runs/{last_id}"
+            url = f"https://github.com/{TDBS}/actions/runs/{last_id}"
             write(f"Seen {len(db_ids)}x, most recently [#{last_number}]({url}) (at {last_run_dt}):")
             write(f"```")
             with open(f"{NORMALIZED_DIR}/{last_id}", "r") as f:
@@ -175,7 +175,7 @@ def summarize(issue, no_update_issue, level, no_update_readme):
             for idx, db_id in enumerate(db_ids):
                 run = runs_by_id[db_id]
                 number = run["number"]
-                url = f"https://github.com/{REPO}/actions/runs/{db_id}"
+                url = f"https://github.com/{TDBS}/actions/runs/{db_id}"
                 if idx > 0:
                     write(", ", end="")
                 write(f"[#{number}]({url})", end="")

@@ -6,7 +6,7 @@ import jsonlines
 from click import argument
 from utz import err, parallel, process, YMD
 
-from .base import cli, DEFAULT_SINCE, REPO, since_opt, overwrite_opt, n_jobs_opt, out_dir_opt, DEFAULT_RUNS_FILE
+from .base import cli, DEFAULT_SINCE, TDBS, since_opt, overwrite_opt, n_jobs_opt, out_dir_opt, DEFAULT_RUNS_FILE
 
 # Runs omitted due to unrelated failures:
 # - [10113090142]: all jobs failed: `No valid versions of tiledb-r found`
@@ -71,7 +71,7 @@ def download_failure_logs(
         with open(out_path, "w") as f:
             process.run(
                 "gh", "run",
-                "-R", REPO,
+                "-R", TDBS,
                 "view", db_id,
                 "--log-failed",
                 stdout=f,
