@@ -6,7 +6,7 @@ from os import environ as env
 
 import jsonlines
 from click import option
-from utz import process, singleton, now
+from utz import process, singleton, now, err
 
 from .base import cli, load_db_ids, DEFAULT_RUNS_FILE, REPO, GH_ISSUE_NUM
 from .normalize_errors import NORMALIZED_DIR
@@ -42,7 +42,7 @@ def readme_sub_ctx():
 
 @cli.command
 @option('-i', '--update-issue', type=int, default=GH_ISSUE_NUM, help="Issue number to update. Summary goes between `<!-- summary -->` and `<!-- /summary -->` \"tags\", if present.")
-@option('-l', '--level', type=int, default=4, help='Markdown heading level for each error message group')
+@option('-l', '--level', type=int, default=3, help='Markdown heading level for each error message group')
 @option('-u', '--update-readme', is_flag=True)
 def summarize(update_issue, level, update_readme):
     """Group normalized error logs, summarize."""
@@ -123,7 +123,8 @@ def summarize(update_issue, level, update_readme):
         if found:
             now_str = f'{now()}'
             new_lines.append("<details>")
-            new_lines.append("<summary><h3>Breakdown by error message</h3></summary>")
+            new_lines.append("<summary><h2>Breakdown by error message</h2></summary>")
+            new_lines.append("")
             run_number = env.get('GITHUB_RUN_NUMBER')
             run_id = env.get('GITHUB_RUN_ID')
             if run_id and run_number:
@@ -140,9 +141,20 @@ def summarize(update_issue, level, update_readme):
             for line in lines:
                 new_lines.append(line)
 
-        new_body = "\n".join(new_lines)
         print()
+        new_body = "\n".join(new_lines)
+        if new_body == body:
+            err(f"#{update_issue} body unchanged")
+            return
         print("new body:")
         print(new_body)
-        with open(f'{update_issue}.md', 'w') as f:
+        body_path = f"{update_issue}.md"
+        with open(body_path, "w") as f:
             f.write(new_body)
+
+        process.run(
+            'gh', 'issue',
+            '-R', REPO,
+            'edit', update_issue,
+            '--body-file', body_path,
+        )
