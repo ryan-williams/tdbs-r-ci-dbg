@@ -143,7 +143,7 @@ def summarize(issue, no_update_issue, level, no_update_readme):
                 print(line, file=readme, **kwargs)
 
         heading_prefix = "#" * level
-        for sha, db_ids in shas.items():
+        for sha, db_ids in sorted(shas.items(), key=lambda item: len(item[1]), reverse=True):
             db_ids.sort()
             name = NAMES[sha]
             last_id = db_ids[-1]
