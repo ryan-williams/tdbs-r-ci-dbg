@@ -49,6 +49,7 @@ def update_issue(
     header_level: int,
     runs_since_5442: list[dict],
     quiet: bool,
+    dry_run: bool,
 ):
     body = singleton(
         process.json(
@@ -117,6 +118,7 @@ def update_issue(
         '-R', TDBS,
         'edit', issue,
         '--body-file', body_path,
+        dry_run=dry_run,
     )
 
 
@@ -124,9 +126,10 @@ def update_issue(
 @option('-i', '--issue', type=int, default=GH_ISSUE_NUM, help="Issue number to update. Summary goes between `<!-- summary -->` and `<!-- /summary -->` \"tags\", if present.")
 @option('-I', '--no-update-issue', 'no_update_issue', is_flag=True)
 @option('-l', '--level', type=int, default=3, help='Markdown heading level for each error message group')
+@option('-n', '--dry-run', is_flag=True, help="Update local files, but don't actually edit the issue")
 @option('-q', '--quiet', is_flag=True, help=f"Don't print the \"summary\" that's being written to README.md and/or #{GH_ISSUE_NUM}; useful e.g. because GitHub Actions mistakenly detects error messages in the summary as applying to the current job")
 @option('-U', '--no-update-readme', is_flag=True)
-def summarize(issue, no_update_issue, level, quiet, no_update_readme):
+def summarize(issue, no_update_issue, level, dry_run, quiet, no_update_readme):
     """Group normalized error logs, summarize."""
     db_ids = load_db_ids(NORMALIZED_DIR)
     shas = {}
@@ -203,4 +206,5 @@ def summarize(issue, no_update_issue, level, quiet, no_update_readme):
             header_level=level - 1,
             runs_since_5442=runs_since_5442,
             quiet=quiet,
+            dry_run=dry_run,
         )
