@@ -1,10 +1,11 @@
+import json
 from contextlib import contextmanager
 from sys import stdout
 from typing import Optional
 
 import jsonlines
 from click import option, argument
-from utz import process, YMD
+from utz import process, YMD, now
 
 from .base import cli, since_opt, REPO
 
@@ -41,6 +42,7 @@ def fetch_runs(branch, max_runs, reverse_chron, statuses, since, out_path):
             "--json", "number,databaseId,conclusion,createdAt",
         )
 
+    now_str = f'{now()}'
     if statuses:
         runs = []
         for status in statuses:
@@ -64,3 +66,9 @@ def fetch_runs(branch, max_runs, reverse_chron, statuses, since, out_path):
         writer = jsonlines.Writer(file, compact=True)
         writer.write_all(runs)
         writer.close()
+
+    if out_path != '-':
+        assert out_path.endswith('.jsonl')
+        metadata_path = out_path[:-1]
+        with open(metadata_path, 'w') as f:
+            json.dump({ 'fetched_at': now_str }, f, indent=2)

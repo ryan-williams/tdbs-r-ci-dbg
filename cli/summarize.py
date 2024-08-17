@@ -1,3 +1,4 @@
+import json
 from contextlib import contextmanager, nullcontext
 from functools import partial
 from hashlib import sha256
@@ -6,9 +7,9 @@ from os import environ as env
 
 import jsonlines
 from click import option
-from utz import process, singleton, now, err
+from utz import process, err, singleton
 
-from .base import cli, load_db_ids, DEFAULT_RUNS_FILE, REPO, GH_ISSUE_NUM
+from .base import cli, load_db_ids, DEFAULT_RUNS_FILE, REPO, GH_ISSUE_NUM, DEFAULT_METADATA_FILE
 from .normalize_errors import NORMALIZED_DIR
 
 NAMES = {
@@ -40,11 +41,78 @@ def readme_sub_ctx():
             write(line)
 
 
+def update_issue(
+    issue: int,
+    summary_str: str,
+    fetched_at: str,
+    header_level: int,
+):
+    body = singleton(
+        process.json(
+            'gh', 'issue',
+            '-R', REPO,
+            'view', issue,
+            '--json', 'body',
+        ).values()
+    )
+    lines = (line.rstrip('\r') for line in body.split("\n"))
+    body_io = StringIO()
+
+    def write(line="", **kwargs):
+        print(line, file=body_io, **kwargs)
+    found = False
+    for line in lines:
+        write(line)
+        if line == "<!-- summary -->":
+            found = True
+            break
+    if found:
+        assert header_level >= 1
+        heading = f"h{header_level}"
+        write("<details>")
+        write(f"<summary><{heading}>Breakdown by error message</{heading}></summary>")
+        write("")
+        run_number = env.get('GITHUB_RUN_NUMBER')
+        run_id = env.get('GITHUB_RUN_ID')
+        if run_id and run_number:
+            url = f"https://github.com/{REPO}/actions/runs/{run_id}"
+            write(f"*Updated at {fetched_at} (by [#{run_number}]({url}))*")
+        else:
+            write(f"*Updated at {fetched_at}*")
+        write(summary_str)
+        write("</details>")
+        for line in lines:
+            if line == "<!-- /summary -->":
+                write(line)
+                break
+        for line in lines:
+            write(line)
+
+    print()
+    new_body = body_io.getvalue()
+    if new_body == body:
+        err(f"#{issue} body unchanged")
+        return
+    print("new body:")
+    print(new_body)
+    body_path = f"{issue}.md"
+    with open(body_path, "w") as f:
+        f.write(new_body)
+
+    process.run(
+        'gh', 'issue',
+        '-R', REPO,
+        'edit', issue,
+        '--body-file', body_path,
+    )
+
+
 @cli.command
-@option('-i', '--update-issue', type=int, default=GH_ISSUE_NUM, help="Issue number to update. Summary goes between `<!-- summary -->` and `<!-- /summary -->` \"tags\", if present.")
+@option('-i', '--issue', type=int, default=GH_ISSUE_NUM, help="Issue number to update. Summary goes between `<!-- summary -->` and `<!-- /summary -->` \"tags\", if present.")
+@option('-I', '--no-update-issue', 'no_update_issue', is_flag=True)
 @option('-l', '--level', type=int, default=3, help='Markdown heading level for each error message group')
-@option('-u', '--update-readme', is_flag=True)
-def summarize(update_issue, level, update_readme):
+@option('-U', '--no-update-readme', is_flag=True)
+def summarize(issue, no_update_issue, level, no_update_readme):
     """Group normalized error logs, summarize."""
     db_ids = load_db_ids(NORMALIZED_DIR)
     shas = {}
@@ -63,8 +131,12 @@ def summarize(update_issue, level, update_readme):
                 for run in runs
             }
 
+    with open(DEFAULT_METADATA_FILE, "r") as f:
+        metadata = json.load(f)
+        fetched_at = metadata["fetched_at"]
+
     summary_io = StringIO()
-    with readme_sub_ctx() if update_readme else nullcontext() as readme:
+    with nullcontext() if no_update_readme else readme_sub_ctx() as readme:
         def write(line="", **kwargs):
             print(line, file=summary_io, **kwargs)
             if readme:
@@ -103,58 +175,5 @@ def summarize(update_issue, level, update_readme):
     summary_str = summary_io.getvalue()
     print(summary_str)
 
-    if update_issue:
-        body = singleton(
-            process.json(
-                'gh', 'issue',
-                '-R', REPO,
-                'view', update_issue,
-                '--json', 'body',
-            ).values()
-        )
-        lines = (line.rstrip('\r') for line in body.split("\n"))
-        new_lines = []
-        found = False
-        for line in lines:
-            new_lines.append(line)
-            if line == "<!-- summary -->":
-                found = True
-                break
-        if found:
-            now_str = f'{now()}'
-            new_lines.append("<details>")
-            new_lines.append("<summary><h2>Breakdown by error message</h2></summary>")
-            new_lines.append("")
-            run_number = env.get('GITHUB_RUN_NUMBER')
-            run_id = env.get('GITHUB_RUN_ID')
-            if run_id and run_number:
-                url = f"https://github.com/{REPO}/actions/runs/{run_id}"
-                new_lines.append(f"*Updated at {now_str}, by [#{run_number}]({url})*")
-            else:
-                new_lines.append(f"*Updated at {now_str}*")
-            new_lines.append(summary_str)
-            new_lines.append("</details>")
-            for line in lines:
-                if line == "<!-- /summary -->":
-                    new_lines.append(line)
-                    break
-            for line in lines:
-                new_lines.append(line)
-
-        print()
-        new_body = "\n".join(new_lines)
-        if new_body == body:
-            err(f"#{update_issue} body unchanged")
-            return
-        print("new body:")
-        print(new_body)
-        body_path = f"{update_issue}.md"
-        with open(body_path, "w") as f:
-            f.write(new_body)
-
-        process.run(
-            'gh', 'issue',
-            '-R', REPO,
-            'edit', update_issue,
-            '--body-file', body_path,
-        )
+    if not no_update_issue:
+        update_issue(issue, summary_str, fetched_at, header_level=level - 1)

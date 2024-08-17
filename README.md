@@ -103,11 +103,13 @@ dbg-r-ci normalize-errors
 
 ### Group by hash, summarize groups
 ```bash
-dbg-r-ci summarize -u
+dbg-r-ci summarize
 ```
-This updates the top of this README.
+This updates the top of this README, as well as the "Breakdown by error message" details section of [TileDB-SOMA#2906].
 
 
 [`r-ci.yml`]: https://github.com/single-cell-data/TileDB-SOMA/actions/workflows/r-ci.yml
 
 [recent `r-ci.yml` `main` runs]: https://github.com/single-cell-data/TileDB-SOMA/actions/workflows/r-ci.yml?query=branch%3Amain
+
+[TileDB-SOMA#2906]: https://github.com/single-cell-data/TileDB-SOMA/issues/2906
