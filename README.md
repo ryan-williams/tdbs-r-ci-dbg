@@ -37,7 +37,7 @@ An irrecoverable exception occurred. R is aborting now ...
 </details>
 
 ### "bad_function_call"
-Seen 9x, most recently [#5738](https://github.com/single-cell-data/TileDB-SOMA/actions/runs/10407106592) (at 2024-08-15T16:31):
+Seen 10x, most recently [#5764](https://github.com/single-cell-data/TileDB-SOMA/actions/runs/10434687662) (at 2024-08-17T19:25):
 ```
 terminate called after throwing an instance of 'std::bad_function_call'
   what():  bad_function_call
@@ -48,7 +48,7 @@ terminate called after throwing an instance of 'std::bad_function_call'
 <details>
 <summary>All runs</summary>
 
-[#5467](https://github.com/single-cell-data/TileDB-SOMA/actions/runs/9841072036), [#5527](https://github.com/single-cell-data/TileDB-SOMA/actions/runs/9977611518), [#5560](https://github.com/single-cell-data/TileDB-SOMA/actions/runs/10117378964), [#5615](https://github.com/single-cell-data/TileDB-SOMA/actions/runs/10255002395), [#5637](https://github.com/single-cell-data/TileDB-SOMA/actions/runs/10267534162), [#5654](https://github.com/single-cell-data/TileDB-SOMA/actions/runs/10277228833), [#5673](https://github.com/single-cell-data/TileDB-SOMA/actions/runs/10309133151), [#5707](https://github.com/single-cell-data/TileDB-SOMA/actions/runs/10371391793), [#5738](https://github.com/single-cell-data/TileDB-SOMA/actions/runs/10407106592)
+[#5467](https://github.com/single-cell-data/TileDB-SOMA/actions/runs/9841072036), [#5527](https://github.com/single-cell-data/TileDB-SOMA/actions/runs/9977611518), [#5560](https://github.com/single-cell-data/TileDB-SOMA/actions/runs/10117378964), [#5615](https://github.com/single-cell-data/TileDB-SOMA/actions/runs/10255002395), [#5637](https://github.com/single-cell-data/TileDB-SOMA/actions/runs/10267534162), [#5654](https://github.com/single-cell-data/TileDB-SOMA/actions/runs/10277228833), [#5673](https://github.com/single-cell-data/TileDB-SOMA/actions/runs/10309133151), [#5707](https://github.com/single-cell-data/TileDB-SOMA/actions/runs/10371391793), [#5738](https://github.com/single-cell-data/TileDB-SOMA/actions/runs/10407106592), [#5764](https://github.com/single-cell-data/TileDB-SOMA/actions/runs/10434687662)
 </details>
 
 ### "address (nil), cause 'unknown'"
