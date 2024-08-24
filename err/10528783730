@@ -1,0 +1,4 @@
+terminate called after throwing an instance of 'std::bad_function_call'
+  what():  bad_function_call
+/home/runner/work/_temp/b8af3056-878b-4c19-ae8b-fcbca37fe0a1.sh: line 1:  9641 Aborted                 (core dumped) Rscript testthat.R
+##[error]Process completed with exit code 134.
